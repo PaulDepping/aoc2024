@@ -1,4 +1,4 @@
-use std::{error::Error, iter::zip};
+use std::{collections::HashMap, error::Error};
 
 const INPUT: &'static str = include_str!("../input/01.txt");
 
@@ -19,16 +19,24 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     assert!(a.len() == b.len());
 
-    a.sort();
-    b.sort();
+    // a.sort();
+    // b.sort();
 
-    let mut sum = 0;
-    for (a_el, b_el) in zip(a, b) {
-        let dif = a_el.abs_diff(b_el);
-        sum += dif;
+    let mut similarity_list = HashMap::<u64, u64>::new();
+    for el in b {
+        let entry = similarity_list.entry(el).or_insert(0);
+        *entry += 1;
     }
 
-    println!("The total difference is {}.", sum);
+    let mut score = 0;
+    for el in a {
+        match similarity_list.get(&el) {
+            Some(val) => score += el * val,
+            None => (),
+        };
+    }
+
+    println!("The final score is {}.", score);
 
     Ok(())
 }
