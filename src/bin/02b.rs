@@ -9,10 +9,9 @@ enum ChangeState {
     Increasing(i64),
 }
 
-fn is_safe(v: &[i64]) -> bool {
+fn is_safe(v: impl Iterator<Item = i64>) -> bool {
     let mut state = ChangeState::NotSet;
-    for (i, val_ref) in v.iter().enumerate() {
-        let val = *val_ref;
+    for (i, val) in v.enumerate() {
         if i == 0 {
             state = ChangeState::Start(val);
             continue;
@@ -63,20 +62,19 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|s| s.parse().expect("failed to parse input"))
             .collect();
 
-        if is_safe(&values) {
+        if is_safe(values.iter().map(|f| *f)) {
             safe_count += 1;
             continue;
         }
 
         // try other permutations
         for i in 0..values.len() {
-            let v: Vec<i64> = values
+            let v = values
                 .iter()
                 .enumerate()
                 .filter(|(el_num, _)| *el_num != i)
-                .map(|(_, b)| *b)
-                .collect();
-            if is_safe(&v) {
+                .map(|(_, b)| *b);
+            if is_safe(v) {
                 safe_count += 1;
                 break;
             }
