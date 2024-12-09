@@ -4,16 +4,16 @@ use std::{
 };
 
 #[repr(transparent)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 struct AntennaIdentifier(char);
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Copy)]
 enum MapState {
     Empty,
     Antenna(AntennaIdentifier),
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 struct Position {
     row: usize,
     column: usize,
@@ -88,14 +88,15 @@ fn add_positions_for_pairs<'a>(
             let mut row = other_position.row as isize;
             let mut column = other_position.column as isize;
             loop {
-                if (0..row_max).contains(&row) && (0..column_max).contains(&column) {
-                    valid_positions.insert(Position {
-                        row: row.try_into()?,
-                        column: column.try_into()?,
-                    });
-                } else {
+                if !(0..row_max).contains(&row) || !(0..column_max).contains(&column) {
                     break;
                 }
+
+                valid_positions.insert(Position {
+                    row: row.try_into()?,
+                    column: column.try_into()?,
+                });
+
                 row = row + row_dif;
                 column = column + column_dif;
             }
@@ -107,14 +108,14 @@ fn add_positions_for_pairs<'a>(
             loop {
                 row = row - row_dif;
                 column = column - column_dif;
-                if (0..row_max).contains(&row) && (0..column_max).contains(&column) {
-                    valid_positions.insert(Position {
-                        row: row.try_into()?,
-                        column: column.try_into()?,
-                    });
-                } else {
+                if !(0..row_max).contains(&row) || !(0..column_max).contains(&column) {
                     break;
                 }
+
+                valid_positions.insert(Position {
+                    row: row.try_into()?,
+                    column: column.try_into()?,
+                });
             }
         }
     }
