@@ -3,13 +3,12 @@ use std::{collections::HashMap, error, fmt::Write, mem, num::ParseIntError};
 const INPUT: &str = include_str!("../input/11.txt");
 
 fn get_input() -> Result<Vec<u64>, ParseIntError> {
-    INPUT
-        .split_whitespace()
-        .map(|s| -> Result<u64, _> { s.parse() })
-        .collect()
+    INPUT.split_whitespace().map(|s| s.parse()).collect()
 }
 
-fn main() -> Result<(), Box<dyn error::Error>> {
+type BoxedResult<T> = Result<T, Box<dyn error::Error>>;
+
+fn main() -> BoxedResult<()> {
     let raw_input = get_input()?;
 
     let mut input = HashMap::new();
